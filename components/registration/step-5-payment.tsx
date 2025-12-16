@@ -42,14 +42,11 @@ export function Step5Payment({ form }: Step5PaymentProps) {
     }, 2000)
   }
 
-  // UPI URL for QR Code (Placeholder)
-  // Format: upi://pay?pa=<UPI_ID>&pn=<NAME>&am=<AMOUNT>&cu=<CURRENCY>
-  // We'll leave amount empty or optional to let user enter it, or you can fix it.
-  // Using a sample UPI ID.
-  const upiId = "omer@upi" 
-  const upiName = "Crampon Adventures"
-  const qrData = encodeURIComponent(`upi://pay?pa=${upiId}&pn=${upiName}`)
-  const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${qrData}`
+  // UPI Details from User
+  const upiId = "muwahidomer@okicici" 
+  const upiName = "Mohammad Omer"
+  // Using static image uploaded by user
+  const qrUrl = "/images/payment-qr.png"
 
   return (
     <div className="space-y-6">
@@ -69,6 +66,7 @@ export function Step5Payment({ form }: Step5PaymentProps) {
           />
         </div>
         <p className="mt-4 text-sm font-medium">UPI ID: {upiId}</p>
+        <p className="text-xs text-muted-foreground mt-1">Name: {upiName}</p>
       </div>
 
       <div className="space-y-4">

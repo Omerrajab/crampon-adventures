@@ -3,6 +3,7 @@ import * as z from "zod"
 export const registrationSchema = z.object({
   // Step 1: Identity & Personal Info
   fullName: z.string().min(2, "Full name must be at least 2 characters"),
+  eventName: z.string().optional(),
   dateOfBirth: z.date({
     required_error: "Date of birth is required",
   }),

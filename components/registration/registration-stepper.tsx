@@ -35,6 +35,7 @@ export function RegistrationStepper() {
     mode: "onChange",
     defaultValues: {
       fullName: "",
+      eventName: "Winter Expedition (Example)",
       nationality: "",
       gender: "",
       email: "",
@@ -67,7 +68,44 @@ export function RegistrationStepper() {
         createdAt: new Date(),
       })
       
-      alert("Registration Successful!")
+      
+      // Send Confirmation Email
+      try {
+        await fetch("/api/send-email", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            to: data.email,
+            subject: "Welcome to Crampon Adventures!",
+            html: `
+              <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+                <h1 style="color: #0f172a;">Welcome to Crampon Adventures!</h1>
+                <p>Hi ${data.fullName},</p>
+                <p>Thank you for registering with us. We are excited to have you on board!</p>
+                <p><strong>Registration Details:</strong></p>
+                <ul>
+                  <li><strong>Event:</strong> ${data.eventName || "General Registration"}</li>
+                  <li><strong>Date of Registration:</strong> ${new Date().toLocaleDateString()}</li>
+                  <li><strong>Phone:</strong> ${data.phone}</li>
+                  <li><strong>Email:</strong> ${data.email}</li>
+                  <li><strong>Address:</strong> ${data.address}</li>
+                  <li><strong>Emergency Contact:</strong> ${data.emergencyContactName} (${data.emergencyContactPhone})</li>
+                  <li><strong>Blood Group:</strong> ${data.bloodGroup}</li>
+                  <li><strong>Fitness Level:</strong> ${data.fitnessLevel}</li>
+                  <li><strong>Transaction ID:</strong> ${data.transactionId}</li>
+                </ul>
+                <p>We will review your details and get back to you shortly with more information.</p>
+                <p>Best regards,<br/>The Crampon Adventures Team</p>
+              </div>
+            `,
+          }),
+        })
+      } catch (emailError) {
+        console.error("Failed to send email:", emailError)
+        // Optionally notify user that email failed but registration succeeded
+      }
+
+      alert("Registration Successful! A confirmation email has been sent.")
       // Optional: Reset form or redirect
       // form.reset()
     } catch (error) {
