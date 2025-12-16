@@ -7,5 +7,11 @@ service cloud.firestore {
     match /messages/{docId} {
       allow create: if true;
     }
+    match /events/{docId} {
+      allow read, write: if true;
+    }
+    match /adventures/{docId} {
+      allow read, write: if true;
+    }
   }
 }
