@@ -1,7 +1,8 @@
 "use client"
 
+import * as React from "react"
 import { format } from "date-fns"
-import { CalendarIcon } from "lucide-react"
+import { CalendarIcon, ChevronDownIcon } from "lucide-react"
 import { UseFormReturn } from "react-hook-form"
 import * as z from "zod"
 
@@ -58,40 +59,7 @@ export function Step1Identity({ form }: StepProps) {
           render={({ field }) => (
             <FormItem className="flex flex-col">
               <FormLabel>Date of birth</FormLabel>
-              <Popover>
-                <PopoverTrigger asChild>
-                  <FormControl>
-                    <Button
-                      variant={"outline"}
-                      className={cn(
-                        "w-full pl-3 text-left font-normal",
-                        !field.value && "text-muted-foreground"
-                      )}
-                    >
-                      {field.value ? (
-                        format(field.value, "PPP")
-                      ) : (
-                        <span>Pick a date</span>
-                      )}
-                      <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                    </Button>
-                  </FormControl>
-                </PopoverTrigger>
-                <PopoverContent className="w-auto p-0" align="start">
-                  <Calendar
-                    mode="single"
-                    selected={field.value}
-                    onSelect={field.onChange}
-                    disabled={(date) =>
-                      date > new Date() || date < new Date("1900-01-01")
-                    }
-                    initialFocus
-                    captionLayout="dropdown-buttons"
-                    fromYear={1900}
-                    toYear={new Date().getFullYear()}
-                  />
-                </PopoverContent>
-              </Popover>
+              <DatePickerWithForm field={field} />
               <FormMessage />
             </FormItem>
           )}
@@ -135,5 +103,47 @@ export function Step1Identity({ form }: StepProps) {
         )}
       />
     </div>
+  )
+}
+
+function DatePickerWithForm({ field }: { field: any }) {
+  const [open, setOpen] = React.useState(false)
+
+  return (
+    <Popover open={open} onOpenChange={setOpen}>
+      <PopoverTrigger asChild>
+        <FormControl>
+          <Button
+            variant={"outline"}
+            className={cn(
+              "w-full pl-3 text-left font-normal justify-between",
+              !field.value && "text-muted-foreground"
+            )}
+          >
+            {field.value ? (
+              field.value.toLocaleDateString()
+            ) : (
+              <span>Select date</span>
+            )}
+            <ChevronDownIcon className="h-4 w-4 opacity-50" />
+          </Button>
+        </FormControl>
+      </PopoverTrigger>
+      <PopoverContent className="w-[var(--radix-popover-trigger-width)] overflow-hidden p-0" align="start">
+        <Calendar
+            mode="single"
+            selected={field.value}
+            captionLayout="dropdown"
+            onSelect={(date) => {
+              field.onChange(date)
+              setOpen(false)
+            }}
+            disabled={(date) =>
+              date > new Date() || date < new Date("1900-01-01")
+            }
+            className="w-full"
+          />
+      </PopoverContent>
+    </Popover>
   )
 }

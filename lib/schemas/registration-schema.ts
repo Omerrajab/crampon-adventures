@@ -24,6 +24,10 @@ export const registrationSchema = z.object({
   fitnessLevel: z.enum(["beginner", "intermediate", "advanced", "expert"], {
     required_error: "Please select your fitness level",
   }),
+
+  // Step 5: Payment
+  transactionId: z.string().min(1, "Transaction ID is required to verify payment"),
+  paymentStatus: z.enum(["pending", "verified"]).optional(),
 })
 
 export type RegistrationFormData = z.infer<typeof registrationSchema>

@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button"
 import { motion } from "framer-motion"
 import { ArrowRight } from "lucide-react"
 import Link from "next/link"
+import { LiveHeroAnimation } from "./live-hero-animation"
 
 export function HeroSection() {
   return (
@@ -16,6 +17,7 @@ export function HeroSection() {
           alt="Mountain Landscape"
           className="h-full w-full object-cover"
         />
+        <LiveHeroAnimation />
       </div>
 
       <div className="container relative z-20 flex flex-col items-center text-center px-4 md:px-6">

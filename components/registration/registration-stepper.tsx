@@ -15,12 +15,14 @@ import { Step1Identity } from "./step-1-identity"
 import { Step2Contact } from "./step-2-contact"
 import { Step3Medical } from "./step-3-medical"
 import { Step4Review } from "./step-4-review"
+import { Step5Payment } from "./step-5-payment"
 
 const steps = [
   { id: 1, name: "Identity" },
   { id: 2, name: "Contact" },
   { id: 3, name: "Medical" },
   { id: 4, name: "Review" },
+  { id: 5, name: "Payment" },
 ]
 
 export function RegistrationStepper() {
@@ -45,11 +47,18 @@ export function RegistrationStepper() {
       allergies: "",
       medications: "",
       fitnessLevel: undefined,
+      transactionId: "",
+      paymentStatus: "pending",
     },
   })
 
   const processForm = async (data: z.infer<typeof registrationSchema>) => {
     try {
+      if (data.paymentStatus !== "verified") {
+        alert("Please verify your payment transaction first.")
+        return
+      }
+
       const { collection, addDoc } = await import("firebase/firestore")
       const { db } = await import("@/lib/firebase")
       
@@ -98,6 +107,10 @@ export function RegistrationStepper() {
         return ["email", "phone", "address", "emergencyContactName", "emergencyContactPhone"]
       case 3:
         return ["bloodGroup", "medicalConditions", "allergies", "medications", "fitnessLevel"]
+      case 4:
+         return [] // Review step doesn't have specific fields to validate immediately, but implicitly validates all
+      case 5:
+        return ["transactionId"]
       default:
         return []
     }
@@ -143,7 +156,7 @@ export function RegistrationStepper() {
       {/* Form Steps */}
       <Form {...form}>
         <form className="mt-8" onSubmit={form.handleSubmit(processForm)}>
-          <Card className="bg-white text-black">
+          <Card className="bg-white text-black overflow-hidden">
             <CardHeader>
               <CardTitle>{steps[currentStep - 1].name}</CardTitle>
             </CardHeader>
@@ -160,6 +173,7 @@ export function RegistrationStepper() {
                   {currentStep === 2 && <Step2Contact form={form} />}
                   {currentStep === 3 && <Step3Medical form={form} />}
                   {currentStep === 4 && <Step4Review form={form} />}
+                  {currentStep === 5 && <Step5Payment form={form} />}
                 </motion.div>
               </AnimatePresence>
             </CardContent>

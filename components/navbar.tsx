@@ -53,20 +53,26 @@ export function Navbar() {
         <div className="hidden md:flex md:flex-1">
           <NavigationMenu>
             <NavigationMenuList>
-              {routes.map((route) => (
-                <NavigationMenuItem key={route.href}>
-                  <Link href={route.href} legacyBehavior passHref>
-                    <NavigationMenuLink
-                      className={cn(
-                        navigationMenuTriggerStyle(),
-                        pathname === route.href && "bg-accent text-accent-foreground"
-                      )}
-                    >
-                      {route.label}
-                    </NavigationMenuLink>
-                  </Link>
-                </NavigationMenuItem>
-              ))}
+              {routes.map((route) => {
+                const isActive = route.href === "/" 
+                  ? pathname === "/" 
+                  : pathname?.startsWith(route.href)
+
+                return (
+                  <NavigationMenuItem key={route.href}>
+                    <Link href={route.href} legacyBehavior passHref>
+                      <NavigationMenuLink
+                        className={cn(
+                          navigationMenuTriggerStyle(),
+                          isActive && "bg-transparent text-primary underline decoration-2 underline-offset-4 decoration-primary hover:bg-transparent hover:text-primary focus:bg-transparent focus:text-primary"
+                        )}
+                      >
+                        {route.label}
+                      </NavigationMenuLink>
+                    </Link>
+                  </NavigationMenuItem>
+                )
+              })}
             </NavigationMenuList>
           </NavigationMenu>
         </div>
@@ -94,19 +100,25 @@ export function Navbar() {
                     <span className="font-bold">Crampon Adventures</span>
                   </Link>
                   <div className="flex flex-col space-y-3">
-                    {routes.map((route) => (
-                      <Link
-                        key={route.href}
-                        href={route.href}
-                        className={cn(
-                          "text-foreground/70 transition-colors hover:text-foreground",
-                          pathname === route.href && "text-foreground"
-                        )}
-                        onClick={() => setIsOpen(false)}
-                      >
-                        {route.label}
-                      </Link>
-                    ))}
+                    {routes.map((route) => {
+                      const isActive = route.href === "/" 
+                        ? pathname === "/" 
+                        : pathname?.startsWith(route.href)
+
+                      return (
+                        <Link
+                          key={route.href}
+                          href={route.href}
+                          className={cn(
+                            "text-foreground/70 transition-colors hover:text-foreground",
+                            isActive && "text-primary font-semibold"
+                          )}
+                          onClick={() => setIsOpen(false)}
+                        >
+                          {route.label}
+                        </Link>
+                      )
+                    })}
                   </div>
                 </div>
               </SheetContent>

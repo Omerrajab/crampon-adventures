@@ -18,11 +18,29 @@ export default function ContactPageContent() {
     message: ""
   })
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const [isSubmitting, setIsSubmitting] = useState(false)
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    console.log("Form submitted:", formData)
-    alert("Thank you for your message! We'll get back to you soon.")
-    setFormData({ name: "", email: "", subject: "", message: "" })
+    setIsSubmitting(true)
+
+    try {
+      const { collection, addDoc } = await import("firebase/firestore")
+      const { db } = await import("@/lib/firebase")
+
+      await addDoc(collection(db, "messages"), {
+        ...formData,
+        createdAt: new Date(),
+      })
+
+      alert("Thank you for your message! We'll get back to you soon.")
+      setFormData({ name: "", email: "", subject: "", message: "" })
+    } catch (error) {
+      console.error("Error sending message:", error)
+      alert("Failed to send message. Please try again.")
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -107,8 +125,8 @@ export default function ContactPageContent() {
                           required
                         />
                       </div>
-                      <Button type="submit" className="w-full">
-                        Send Message
+                      <Button type="submit" className="w-full" disabled={isSubmitting}>
+                        {isSubmitting ? "Sending..." : "Send Message"}
                       </Button>
                     </form>
                   </CardContent>
@@ -129,7 +147,7 @@ export default function ContactPageContent() {
                       <Phone className="h-5 w-5 text-primary mt-0.5" />
                       <div>
                         <p className="font-medium">Phone</p>
-                        <p className="text-sm text-muted-foreground">+1 (555) 123-4567</p>
+                        <p className="text-sm text-muted-foreground">+917006081590</p>
                       </div>
                     </div>
                     <div className="flex items-start gap-3">
